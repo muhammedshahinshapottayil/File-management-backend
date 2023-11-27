@@ -88,17 +88,36 @@ const deleteUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
         return error;
     }
 });
-const createThumbnail = (id, name, filenames, fileOriginalname) => __awaiter(void 0, void 0, void 0, function* () {
+const createThumbnail = (id, name, albumId, data) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const thumbnail = yield userMdl_1.default.updateOne({ _id: new Obj(id) }, {
-            $push: {
-                albums: {
-                    name,
-                    file: filenames,
-                    fileName: fileOriginalname,
+        let query;
+        let matchQuery;
+        if (albumId) {
+            matchQuery = {
+                _id: new Obj(id),
+                "albums._id": new Obj(albumId),
+            };
+            query = {
+                $set: {
+                    "albums.$.name": name,
+                    "albums.$.file": data,
                 },
-            },
-        });
+            };
+        }
+        else {
+            matchQuery = {
+                _id: new Obj(id),
+            };
+            query = {
+                $push: {
+                    albums: {
+                        name,
+                        file: data,
+                    },
+                },
+            };
+        }
+        const thumbnail = yield userMdl_1.default.updateOne(matchQuery, query);
         return thumbnail ? thumbnail : false;
     }
     catch (error) {
@@ -180,6 +199,7 @@ const getGallery = (id, albumId) => __awaiter(void 0, void 0, void 0, function* 
             },
             {
                 $project: {
+                    albumName: "$albums.name",
                     gallery: "$albums.gallery",
                 },
             },
@@ -222,5 +242,5 @@ exports.default = {
     getAlbums,
     deleteAlbum,
     getGallery,
-    deleteFromGallery
+    deleteFromGallery,
 };

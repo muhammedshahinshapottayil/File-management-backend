@@ -5,17 +5,16 @@ const signUpUseCase = async (dependencies: any) => {
 
   const signup = async (
     id: string,
-    { name }: { name: string },
-    filenames: string,
-    fileOriginalname: string
+    { name, albumId }: { name: string; albumId: string },
+    filenames: string[],
+    fileOriginalname: string[]
   ) => {
     try {
-      const userCreate = await createThumbnail(
-        id,
-        name,
-        filenames,
-        fileOriginalname
-      );
+      const data = filenames.map((item, i) => ({
+        file: item,
+        fileName: fileOriginalname[i],
+      }));
+      const userCreate = await createThumbnail(id, name, albumId, data);
       return userCreate;
     } catch (error) {
       console.error(error);

@@ -11,9 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const signUpUseCase = (dependencies) => __awaiter(void 0, void 0, void 0, function* () {
     const { User: { createThumbnail }, } = dependencies;
-    const signup = (id, { name }, filenames, fileOriginalname) => __awaiter(void 0, void 0, void 0, function* () {
+    const signup = (id, { name, albumId }, filenames, fileOriginalname) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const userCreate = yield createThumbnail(id, name, filenames, fileOriginalname);
+            const data = filenames.map((item, i) => ({
+                file: item,
+                fileName: fileOriginalname[i],
+            }));
+            const userCreate = yield createThumbnail(id, name, albumId, data);
             return userCreate;
         }
         catch (error) {

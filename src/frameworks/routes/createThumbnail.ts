@@ -7,7 +7,7 @@ export default (dependencies: any) => {
   const { createThumbnailController } = controllers(dependencies);
   const {
     Common: { requestValidationerr },
-    Utils: { uploadToCloudinarySingle, uploadFile },
+    Utils: { uploadFiles, uploadToCloudinaryMultiple },
   } = dependencies;
   const router: Router = express.Router();
   router.post(
@@ -21,11 +21,15 @@ export default (dependencies: any) => {
         .notEmpty()
         .trim()
         .withMessage("Please Make Sure Name is valid"),
+      body("albumId")
+        .notEmpty()
+        .trim()
+        .withMessage("Please Make Sure Name is valid"),
     ],
     isAuth,
     // requestValidationerr,
-    uploadFile,
-    uploadToCloudinarySingle,
+    uploadFiles,
+    uploadToCloudinaryMultiple,
     createThumbnailController
   );
   return router;

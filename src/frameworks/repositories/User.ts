@@ -78,22 +78,38 @@ const deleteUser = async (id: mongoose.Types.ObjectId) => {
 const createThumbnail = async (
   id: string,
   name: string,
-  filenames: string,
-  fileOriginalname: string
+  albumId: string,
+  data: { fileName: string; file: string }[]
 ) => {
   try {
-    const thumbnail = await User.updateOne(
-      { _id: new Obj(id) },
-      {
+    let query;
+    let matchQuery;
+    if (albumId) {
+      matchQuery = {
+        _id: new Obj(id),
+        "albums._id": new Obj(albumId),
+      };
+      query = {
+        $set: {
+          "albums.$.name": name,
+          "albums.$.file": data,
+        },
+      };
+    } else {
+      matchQuery = {
+        _id: new Obj(id),
+      };
+      query = {
         $push: {
           albums: {
             name,
-            file: filenames,
-            fileName: fileOriginalname,
+            file: data,
           },
         },
-      }
-    );
+      };
+    }
+
+    const thumbnail = await User.updateOne(matchQuery, query);
     return thumbnail ? thumbnail : false;
   } catch (error) {
     console.log(error);
@@ -185,11 +201,11 @@ const getGallery = async (id: string, albumId: string) => {
       },
       {
         $project: {
+          albumName: "$albums.name",
           gallery: "$albums.gallery",
         },
       },
     ]);
-
     return data ? data : false;
   } catch (error) {
     console.log(error);
@@ -236,5 +252,5 @@ export default {
   getAlbums,
   deleteAlbum,
   getGallery,
-  deleteFromGallery
+  deleteFromGallery,
 };

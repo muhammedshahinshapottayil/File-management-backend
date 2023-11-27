@@ -7,5 +7,5 @@ export default (password: string) => {
       res(await argon2.hash(password, buf));
       rej("Error While Hashing");
     });
-  });
+  }); 
 };

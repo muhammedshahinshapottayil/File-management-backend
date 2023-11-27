@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 declare global {
   namespace Express {
     interface Request {
-      user?:any
+      user?: any;
       filenames?: any;
       fileOriginalname?: any;
     }
@@ -20,7 +20,10 @@ export default (dependencies: any) => {
       if (token instanceof Error) throw new Error(token.toString());
       return res.status(200).json({
         message: "Successfully Completed",
-        data: token.length > 0 ? token[0].gallery : [],
+        data: {
+          albumName: token.length > 0 ? token[0].albumName : "",
+          data: token.length > 0 ? token[0].gallery : [],
+        },
       });
     } catch (error) {
       next(error);

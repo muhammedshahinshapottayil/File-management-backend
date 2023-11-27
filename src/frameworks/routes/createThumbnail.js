@@ -9,7 +9,7 @@ const controllers_1 = __importDefault(require("../../controllers"));
 const isAuth_1 = __importDefault(require("../../utils/isAuth"));
 exports.default = (dependencies) => {
     const { createThumbnailController } = (0, controllers_1.default)(dependencies);
-    const { Common: { requestValidationerr }, Utils: { uploadToCloudinarySingle, uploadFile }, } = dependencies;
+    const { Common: { requestValidationerr }, Utils: { uploadFiles, uploadToCloudinaryMultiple }, } = dependencies;
     const router = express_1.default.Router();
     router.post("/create-thumbnail", [
         (0, express_validator_1.body)("file")
@@ -20,8 +20,12 @@ exports.default = (dependencies) => {
             .notEmpty()
             .trim()
             .withMessage("Please Make Sure Name is valid"),
+        (0, express_validator_1.body)("albumId")
+            .notEmpty()
+            .trim()
+            .withMessage("Please Make Sure Name is valid"),
     ], isAuth_1.default, 
     // requestValidationerr,
-    uploadFile, uploadToCloudinarySingle, createThumbnailController);
+    uploadFiles, uploadToCloudinaryMultiple, createThumbnailController);
     return router;
 };

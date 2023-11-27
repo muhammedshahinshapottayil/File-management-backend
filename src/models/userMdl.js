@@ -12,8 +12,16 @@ const user = new mongoose_1.default.Schema({
         type: [
             {
                 name: { type: String, required: true },
-                file: { type: String, required: true },
-                fileName: { type: String, required: true },
+                file: {
+                    type: [
+                        {
+                            file: { type: String, required: true },
+                            fileName: { type: String, required: true },
+                            date: { type: Date, default: new Date() },
+                            status: { type: Boolean, default: true },
+                        },
+                    ],
+                },
                 date: { type: Date, default: new Date() },
                 status: { type: Boolean, default: true },
                 gallery: {
